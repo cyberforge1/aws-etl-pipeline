@@ -41,3 +41,5 @@ aws s3 ls s3://etl-raw-zone-bucket
 aws lambda invoke \
   --function-name etl-s3-ingest \
   response.json
+
+### Must confirm subscription and add AWS_ACCOUNT_ID as an environmental variable in the console for successful lambda function execution and SNS message
