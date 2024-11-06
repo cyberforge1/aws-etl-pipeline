@@ -5,13 +5,5 @@
       "email": "johndoe@example.com",
       "age": 28,
       "country": "Australia"
-    },
-    {
-      "id": 2,
-      "name": "Jane Smith",
-      "email": "janesmith@example.com",
-      "age": 34,
-      "country": "New Zealand"
     }
-  ]
-  
+]
