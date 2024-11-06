@@ -1,13 +1,9 @@
 # 'provider.tf'
 
 provider "aws" {
-  region = var.CUSTOM_AWS_REGION
+  region = var.aws_region
 }
 
-variable "CUSTOM_AWS_REGION" {
+variable "aws_region" {
   description = "The AWS region to deploy resources in"
-}
-
-variable "aws_account_id" {
-  description = "The AWS Account ID"
 }

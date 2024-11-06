@@ -3,10 +3,6 @@
 import boto3
 import json
 import os
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 sns_client = boto3.client('sns')
 glue_client = boto3.client('glue')
@@ -16,11 +12,14 @@ def lambda_handler(event, context):
     print("Lambda function invoked.")
     print("Received event:", json.dumps(event, indent=2))  # Log the S3 event data in detail
 
-    # Check if environment variables are loaded correctly
-    account_id = os.getenv('AWS_ACCOUNT_ID')
-    region = os.getenv('CUSTOM_AWS_REGION')
+    # Get AWS Region from the environment variable
+    region = os.environ['AWS_REGION']
+    print("Environment - AWS_REGION:", region)
+
+    # Get AWS Account ID using STS
+    sts_client = boto3.client('sts')
+    account_id = sts_client.get_caller_identity()['Account']
     print("Environment - AWS_ACCOUNT_ID:", account_id)
-    print("Environment - CUSTOM_AWS_REGION:", region)
 
     # Check if event contains Records to avoid UnboundLocalError
     if 'Records' in event and event['Records']:
@@ -56,11 +55,21 @@ def lambda_handler(event, context):
             except Exception as e:
                 print("Error publishing to SNS:", e)  # Log any errors
 
-            # Start the Glue Crawler
+            # Start the Glue Crawler only if it's not already running
             try:
                 crawler_name = 'etl-crawler'  # Replace with your Glue Crawler name if different
-                glue_response = glue_client.start_crawler(Name=crawler_name)
-                print("Glue Crawler triggered:", glue_response)
+
+                # Get the current state of the crawler
+                crawler = glue_client.get_crawler(Name=crawler_name)
+                crawler_state = crawler['Crawler']['State']
+                print(f"Current state of the crawler '{crawler_name}': {crawler_state}")
+
+                # Only start the crawler if it's in the 'READY' state
+                if crawler_state == 'READY':
+                    glue_response = glue_client.start_crawler(Name=crawler_name)
+                    print("Glue Crawler started:", glue_response)
+                else:
+                    print(f"Crawler '{crawler_name}' is not in a 'READY' state and cannot be started.")
             except Exception as e:
                 print("Error starting Glue Crawler:", e)  # Log any errors
 

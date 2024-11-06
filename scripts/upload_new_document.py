@@ -1,4 +1,4 @@
-# upload_new_document.py
+# 'scripts/upload_new_document.py'
 
 import boto3
 import datetime
@@ -8,7 +8,15 @@ import random
 
 # Configuration
 BUCKET_NAME = 'etl-raw-zone-bucket'  # Replace with your Raw Zone S3 bucket name
-REGION_NAME = 'ap-southeast-2'       # Replace with your AWS region
+
+# Get the AWS region from an environment variable
+REGION_NAME = os.environ.get('AWS_REGION')
+
+if not REGION_NAME:
+    # If AWS_REGION is not set, you can set a default region or handle the error
+    REGION_NAME = 'ap-southeast-2'  # Default region (optional)
+    # Alternatively, raise an error
+    # raise EnvironmentError("AWS_REGION environment variable is not set.")
 
 # Initialize S3 client
 s3_client = boto3.client('s3', region_name=REGION_NAME)

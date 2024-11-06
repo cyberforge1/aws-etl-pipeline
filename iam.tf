@@ -68,7 +68,7 @@ resource "aws_iam_policy" "lambda_sns_policy" {
       {
         "Effect": "Allow",
         "Action": "sns:Publish",
-        "Resource": "${aws_sns_topic.lambda_notification.arn}"
+        "Resource": aws_sns_topic.lambda_notification.arn
       }
     ]
   })
@@ -80,18 +80,21 @@ resource "aws_iam_role_policy_attachment" "lambda_sns_policy_attachment" {
   policy_arn = aws_iam_policy.lambda_sns_policy.arn
 }
 
-# Custom IAM Policy for Glue Crawler Start for Lambda
+# Custom IAM Policy for Glue Crawler Start and Get for Lambda
 resource "aws_iam_policy" "lambda_glue_policy" {
   name        = "lambda-glue-policy"
-  description = "Custom policy for Lambda to start the Glue Crawler"
+  description = "Custom policy for Lambda to interact with the Glue Crawler"
 
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
       {
         "Effect": "Allow",
-        "Action": "glue:StartCrawler",
-        "Resource": "arn:aws:glue:${var.CUSTOM_AWS_REGION}:${var.aws_account_id}:crawler/etl-crawler"  # Ensure 'etl-crawler' matches your actual crawler name
+        "Action": [
+          "glue:StartCrawler",
+          "glue:GetCrawler"
+        ],
+        "Resource": "arn:aws:glue:${var.aws_region}:${data.aws_caller_identity.current.account_id}:crawler/etl-crawler"
       }
     ]
   })

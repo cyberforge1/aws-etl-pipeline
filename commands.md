@@ -14,11 +14,16 @@ pip install -r requirements.txt
 
 terraform plan
 
-export $(grep -v '^#' .env | xargs)
+export AWS_REGION="ap-southeast-2"
 
 terraform apply
 
 terraform destroy
+
+
+## Document Upload
+
+python scripts/upload_new_document.py
 
 
 ## AWS

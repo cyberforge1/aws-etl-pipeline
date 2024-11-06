@@ -1,5 +1,6 @@
 # 's3.tf'
 
+# S3 Bucket for Raw Data
 resource "aws_s3_bucket" "raw_zone" {
   bucket = "etl-raw-zone-bucket"
 }
@@ -17,13 +18,15 @@ resource "aws_s3_bucket_notification" "raw_zone_notification" {
   }
 }
 
+# S3 Bucket for Processed Data
 resource "aws_s3_bucket" "processed_zone" {
   bucket = "etl-processed-zone-bucket"
 }
 
-resource "aws_s3_object" "raw_data_json" {
-  bucket = aws_s3_bucket.raw_zone.id
-  key    = "data.json"
-  source = "data/data.json"
-  acl    = "private"
-}
+# (Optional) Upload initial data to the raw data bucket
+# resource "aws_s3_object" "raw_data_json" {
+#   bucket = aws_s3_bucket.raw_zone.id
+#   key    = "data.json"
+#   source = "data/data.json"
+#   acl    = "private"
+# }
