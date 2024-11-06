@@ -9,10 +9,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 sns_client = boto3.client('sns')
+glue_client = boto3.client('glue')
 
 def lambda_handler(event, context):
-    """Lambda function triggered by S3 events and sends a notification via SNS."""
-    print("Lambda function invoked with event:", event)  # Log the S3 event data
+    """Lambda function triggered by S3 events, sends a notification via SNS, and starts the Glue Crawler."""
+    print("Lambda function invoked.")
+    print("Received event:", json.dumps(event, indent=2))  # Log the S3 event data in detail
+
+    # Check if environment variables are loaded correctly
+    account_id = os.getenv('AWS_ACCOUNT_ID')
+    region = os.getenv('CUSTOM_AWS_REGION')
+    print("Environment - AWS_ACCOUNT_ID:", account_id)
+    print("Environment - CUSTOM_AWS_REGION:", region)
 
     # Check if event contains Records to avoid UnboundLocalError
     if 'Records' in event and event['Records']:
@@ -23,8 +31,8 @@ def lambda_handler(event, context):
             print(f"New object created in S3 - Bucket: {bucket_name}, Key: {object_key}")
 
             # Construct the SNS topic ARN
-            account_id = os.getenv('AWS_ACCOUNT_ID')  # Get the account ID from the environment
-            topic_arn = f'arn:aws:sns:ap-southeast-2:{account_id}:lambda-completion-topic'
+            topic_arn = f'arn:aws:sns:{region}:{account_id}:lambda-completion-topic'
+            print("SNS Topic ARN:", topic_arn)
 
             # Create the message content
             message = {
@@ -47,10 +55,19 @@ def lambda_handler(event, context):
                 print("SNS Publish Response:", response)  # Log the SNS publish response
             except Exception as e:
                 print("Error publishing to SNS:", e)  # Log any errors
+
+            # Start the Glue Crawler
+            try:
+                crawler_name = 'etl-crawler'  # Replace with your Glue Crawler name if different
+                glue_response = glue_client.start_crawler(Name=crawler_name)
+                print("Glue Crawler triggered:", glue_response)
+            except Exception as e:
+                print("Error starting Glue Crawler:", e)  # Log any errors
+
     else:
         print("No S3 records found in the event. This might be an unexpected trigger.")
 
     return {
         'statusCode': 200,
-        'body': json.dumps('Notification sent with S3 event details (if available).')
+        'body': json.dumps('Notification sent and Glue Crawler triggered (if S3 event present).')
     }

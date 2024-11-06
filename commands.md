@@ -14,6 +14,8 @@ pip install -r requirements.txt
 
 terraform plan
 
+export $(grep -v '^#' .env | xargs)
+
 terraform apply
 
 terraform destroy
