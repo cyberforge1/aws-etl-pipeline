@@ -44,4 +44,25 @@ aws lambda invoke \
   --function-name etl-s3-ingest \
   response.json
 
+### Eventbridge Trigger
+
+aws events put-events --entries '[
+  {
+    "Source": "aws.glue",
+    "DetailType": "Glue Crawler State Change",
+    "Detail": "{\"state\": \"SUCCEEDED\"}"
+  }
+]'
+
+### New Lambda Function Trigger
+
+aws lambda invoke \
+  --function-name hello-world-lambda \
+  --payload '{}' \
+  response.json
+
+
+
+
+
 ### Must confirm subscription and add AWS_ACCOUNT_ID as an environmental variable in the console for successful lambda function execution and SNS message

@@ -1,0 +1,1 @@
+### Current error with the glue crawler and unsuccessful invocation of the new lambda function by eventbridge
