@@ -19,3 +19,22 @@ resource "aws_glue_crawler" "etl_crawler" {
     recrawl_behavior = "CRAWL_EVERYTHING"
   }
 }
+
+# Glue Job for ETL processing
+resource "aws_glue_job" "etl_job" {
+  name        = "etl-job"
+  role_arn    = aws_iam_role.glue_role.arn  # Use the Glue-specific IAM role
+  command {
+    name            = "glueetl"
+    script_location = "s3://path-to-your-script-location/script.py"  # Update with the actual S3 path for your ETL script
+    python_version  = "3"
+  }
+  glue_version    = "3.0"  # Adjust if needed
+  max_capacity    = 2      # Adjust based on the job's resource requirements
+  execution_property {
+    max_concurrent_runs = 1
+  }
+  default_arguments = {
+    "--job-bookmark-option" = "job-bookmark-disable"
+  }
+}

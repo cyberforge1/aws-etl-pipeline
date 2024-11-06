@@ -1,1 +1,1 @@
-{"statusCode": 200, "body": "Hello, world!"}
+{"statusCode": 200, "body": "\"Notification sent and Glue Crawler triggered (if S3 event present).\""}

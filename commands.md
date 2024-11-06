@@ -33,11 +33,20 @@ aws configure
 aws s3 ls s3://etl-raw-zone-bucket/
 
 
-## Zip
+## Zip Lambda functions
+
 
 cd lambda_package
 
 zip -r ../lambda_package.zip .
+
+
+
+cd new_lambda_package
+
+zip -r ../start_glue_etl_job_lambda.zip .
+
+
 
 ## Basic Checks
 
@@ -47,23 +56,6 @@ aws s3 ls s3://etl-raw-zone-bucket
 ### Test Lambda and First SNS
 aws lambda invoke \
   --function-name etl-s3-ingest \
-  response.json
-
-### Eventbridge Trigger
-
-aws events put-events --entries '[
-  {
-    "Source": "aws.glue",
-    "DetailType": "Glue Crawler State Change",
-    "Detail": "{\"state\": \"SUCCEEDED\"}"
-  }
-]'
-
-### New Lambda Function Trigger
-
-aws lambda invoke \
-  --function-name hello-world-lambda \
-  --payload '{}' \
   response.json
 
 
