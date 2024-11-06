@@ -56,3 +56,26 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_policy_attachment" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.lambda_s3_policy.arn
 }
+
+# Custom IAM Policy for SNS Publish
+resource "aws_iam_policy" "lambda_sns_policy" {
+  name        = "lambda-sns-policy"
+  description = "Custom policy for Lambda to publish to SNS"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": "sns:Publish",
+        "Resource": aws_sns_topic.lambda_notification.arn
+      }
+    ]
+  })
+}
+
+# Attach the SNS Policy to the Lambda Role
+resource "aws_iam_role_policy_attachment" "lambda_sns_policy_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_sns_policy.arn
+}
