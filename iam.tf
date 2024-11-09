@@ -1,6 +1,4 @@
-# 'iam.tf'
-
-# IAM Role for Lambda (shared by both s3_ingest_lambda and start_glue_etl_job_lambda)
+# IAM Role for Lambda functions (shared by both s3_ingest_lambda and start_glue_etl_job_lambda)
 resource "aws_iam_role" "lambda_role" {
   name = "lambda-execution-role"
 
@@ -13,7 +11,7 @@ resource "aws_iam_role" "lambda_role" {
           "Service": "lambda.amazonaws.com"
         },
         "Effect": "Allow",
-        "Sid": ""
+          "Sid": ""
       }
     ]
   })
@@ -111,7 +109,7 @@ resource "aws_iam_role_policy_attachment" "lambda_glue_policy_attachment" {
   policy_arn = aws_iam_policy.lambda_glue_policy.arn
 }
 
-# IAM Role for Glue Crawler
+# IAM Role for Glue Crawler and Glue Job
 resource "aws_iam_role" "glue_role" {
   name = "glue-service-role"
 
@@ -129,13 +127,51 @@ resource "aws_iam_role" "glue_role" {
   })
 }
 
-# Attach S3 access policy for Glue Crawler
-resource "aws_iam_role_policy_attachment" "glue_s3_policy_attachment" {
-  role       = aws_iam_role.glue_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+# Custom IAM Policy for Glue S3 Access (read and write)
+resource "aws_iam_policy" "glue_s3_policy" {
+  name        = "glue-s3-access-policy"
+  description = "Custom policy for Glue to access S3"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      # Grant access to Raw and Processed buckets
+      {
+        "Effect": "Allow",
+        "Action": [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::etl-raw-zone-bucket",
+          "arn:aws:s3:::etl-raw-zone-bucket/*",
+          "arn:aws:s3:::etl-processed-zone-bucket",
+          "arn:aws:s3:::etl-processed-zone-bucket/*"
+        ]
+      },
+      # Grant access to Glue Scripts bucket
+      {
+        "Effect": "Allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::etl-glue-scripts-bucket",
+          "arn:aws:s3:::etl-glue-scripts-bucket/*"
+        ]
+      }
+    ]
+  })
 }
 
-# Attach Glue Service Policy to Glue Crawler Role
+# Attach Custom S3 Access Policy to Glue Role
+resource "aws_iam_role_policy_attachment" "glue_s3_policy_attachment_custom" {
+  role       = aws_iam_role.glue_role.name
+  policy_arn = aws_iam_policy.glue_s3_policy.arn
+}
+
+# Attach Glue Service Policy to Glue Role
 resource "aws_iam_role_policy_attachment" "glue_service_policy_attachment" {
   role       = aws_iam_role.glue_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"

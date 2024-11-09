@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "raw_zone" {
   bucket = "etl-raw-zone-bucket"
 }
 
-# Bucket policy to allow Glue Crawler access
+# Bucket policy to allow Glue Crawler access to Raw Zone
 resource "aws_s3_bucket_policy" "raw_zone_policy" {
   bucket = aws_s3_bucket.raw_zone.id
 
@@ -30,6 +30,63 @@ resource "aws_s3_bucket_policy" "raw_zone_policy" {
   })
 }
 
+# S3 Bucket for Processed Data
+resource "aws_s3_bucket" "processed_zone" {
+  bucket = "etl-processed-zone-bucket"
+}
+
+# Bucket policy to allow Glue Job access to Processed Zone
+resource "aws_s3_bucket_policy" "processed_zone_policy" {
+  bucket = aws_s3_bucket.processed_zone.id
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "AWS": "${aws_iam_role.glue_role.arn}"
+        },
+        "Action": [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "${aws_s3_bucket.processed_zone.arn}",
+          "${aws_s3_bucket.processed_zone.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+# S3 Bucket for Glue Scripts
+resource "aws_s3_bucket" "glue_scripts" {
+  bucket = "etl-glue-scripts-bucket"  # Ensure this bucket name is unique
+}
+
+# Bucket policy to allow Glue Job to read the script
+resource "aws_s3_bucket_policy" "glue_scripts_policy" {
+  bucket = aws_s3_bucket.glue_scripts.id
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "AWS": "${aws_iam_role.glue_role.arn}"
+        },
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": "${aws_s3_bucket.glue_scripts.arn}/*"
+      }
+    ]
+  })
+}
+
 # Configure S3 Event Notification to trigger Lambda on new object creation
 resource "aws_s3_bucket_notification" "raw_zone_notification" {
   bucket = aws_s3_bucket.raw_zone.id
@@ -42,16 +99,3 @@ resource "aws_s3_bucket_notification" "raw_zone_notification" {
     events              = ["s3:ObjectCreated:*"]  # Trigger on all object creation events
   }
 }
-
-# S3 Bucket for Processed Data
-resource "aws_s3_bucket" "processed_zone" {
-  bucket = "etl-processed-zone-bucket"
-}
-
-# (Optional) Upload initial data to the raw data bucket
-# resource "aws_s3_object" "raw_data_json" {
-#   bucket = aws_s3_bucket.raw_zone.id
-#   key    = "data.json"
-#   source = "data/data.json"
-#   acl    = "private"
-# }

@@ -26,7 +26,8 @@ resource "aws_glue_job" "etl_job" {
   role_arn    = aws_iam_role.glue_role.arn  # Use the Glue-specific IAM role
   command {
     name            = "glueetl"
-    script_location = "s3://path-to-your-script-location/script.py"  # Update with the actual S3 path for your ETL script
+  # In glue.tf, update this line:
+  script_location = "s3://${aws_s3_bucket.glue_scripts.bucket}/${aws_s3_object.glue_script.key}"  # Reference the uploaded Glue ETL script
     python_version  = "3"
   }
   glue_version    = "3.0"  # Adjust if needed
@@ -36,5 +37,7 @@ resource "aws_glue_job" "etl_job" {
   }
   default_arguments = {
     "--job-bookmark-option" = "job-bookmark-disable"
+    "--raw_bucket"          = aws_s3_bucket.raw_zone.bucket  # Pass raw bucket name as an argument
+    "--processed_bucket"    = aws_s3_bucket.processed_zone.bucket  # Pass processed bucket name as an argument
   }
 }

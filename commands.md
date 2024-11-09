@@ -25,6 +25,8 @@ terraform destroy
 
 python scripts/upload_new_document.py
 
+python scripts/upload_to_processed_bucket.py
+
 
 ## AWS
 

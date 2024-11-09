@@ -6,6 +6,8 @@ aws s3 ls s3://etl-raw-zone-bucket
 
 aws s3 ls s3://etl-processed-zone-bucket
 
+python scripts/upload_new_document.py
+
 
 2) Test Lambda Function
 
