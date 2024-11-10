@@ -12,9 +12,9 @@ pip install -r requirements.txt
 
 ## Terraform
 
-terraform plan
+cd terraform
 
-export AWS_REGION="ap-southeast-2"
+terraform plan
 
 terraform apply
 
@@ -27,7 +27,7 @@ python scripts/upload_new_document.py
 
 python scripts/upload_to_processed_bucket.py
 
-*** update script in s3 bucket : aws s3 cp script.py s3://etl-glue-scripts-bucket/script.py
+*** update script in s3 bucket : aws s3 cp glue_etl_script s3://etl-glue-scripts-bucket/glue_etl_script
 
 
 ## AWS
@@ -40,20 +40,19 @@ aws s3 ls s3://etl-raw-zone-bucket/
 ## Zip Lambda functions
 
 
-cd lambda_package
-
-zip -r ../lambda_package.zip .
-
-
-
-cd new_lambda_package
-
-zip -r ../start_glue_etl_job_lambda.zip .
+cd lambda_functions/lambda_package
+zip -r ../../zipped_lambda_functions/lambda_package.zip .
+cd ../..
 
 
-cd glue_job_completion
+cd lambda_functions/new_lambda_package
+zip -r ../../zipped_lambda_functions/start_glue_etl_job_lambda.zip .
+cd ../..
 
-zip -r ../notify_glue_job_completion_lambda.zip notify_glue_job_completion.py
+
+cd lambda_functions/glue_job_completion
+zip -r ../../zipped_lambda_functions/notify_glue_job_completion_lambda.zip notify_glue_job_completion.py
+cd ../..
 
 
 
