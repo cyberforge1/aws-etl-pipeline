@@ -1,4 +1,4 @@
-# 'lambda_function.py'
+# 'lambda_package/lambda_function.py'
 
 import boto3
 import json

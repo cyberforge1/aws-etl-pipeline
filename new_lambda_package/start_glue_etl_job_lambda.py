@@ -1,4 +1,4 @@
-# start_glue_etl_job_lambda.py
+# new_lambda_package/start_glue_etl_job_lambda.py
 
 import boto3
 import os

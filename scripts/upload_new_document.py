@@ -22,7 +22,7 @@ if not REGION_NAME:
 s3_client = boto3.client('s3', region_name=REGION_NAME)
 
 def generate_random_data():
-    """Generate random JSON data similar to the given structure."""
+    """Generate random JSON data in an array format suitable for Glue."""
     data = [
         {
             "id": random.randint(1, 100),
@@ -31,6 +31,7 @@ def generate_random_data():
             "age": random.randint(20, 40),
             "country": random.choice(["Australia", "Canada", "USA", "UK"])
         }
+        for _ in range(5)  # Generate multiple entries to ensure array format
     ]
     return data
 
@@ -40,9 +41,9 @@ def generate_document():
     document_name = f"document_{timestamp}.json"
     document_content = generate_random_data()
     
-    # Write JSON content to a local file
+    # Write JSON array content to a local file
     with open(document_name, 'w') as file:
-        json.dump(document_content, file)
+        json.dump(document_content, file, indent=2)  # Use indent for readability
     
     return document_name
 
