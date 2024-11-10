@@ -29,3 +29,33 @@ resource "aws_lambda_permission" "allow_eventbridge_invoke_start_glue_etl_job" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.trigger_start_glue_etl_job_lambda_rule.arn
 }
+
+# EventBridge rule to trigger Lambda function on Glue job successful completion
+resource "aws_cloudwatch_event_rule" "trigger_glue_job_completion" {
+  name        = "trigger-glue-job-completion"
+  description = "Triggers Lambda on Glue Job Succeeded event"
+
+  event_pattern = jsonencode({
+    "source": ["aws.glue"],
+    "detail-type": ["Glue Job State Change"],
+    "detail": {
+      "jobName": ["etl-job"],
+      "state": ["SUCCEEDED"]
+    }
+  })
+}
+
+# Target to call the Lambda function
+resource "aws_cloudwatch_event_target" "glue_job_completion_target" {
+  rule = aws_cloudwatch_event_rule.trigger_glue_job_completion.name
+  arn  = aws_lambda_function.notify_glue_job_completion_lambda.arn
+}
+
+# Allow EventBridge to invoke the notify_glue_job_completion_lambda function
+resource "aws_lambda_permission" "allow_eventbridge_invoke_notify_glue_job_completion" {
+  statement_id  = "AllowEventBridgeInvokeNotifyGlueJobCompletion"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.notify_glue_job_completion_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.trigger_glue_job_completion.arn
+}

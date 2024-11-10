@@ -31,3 +31,18 @@ resource "aws_lambda_function" "start_glue_etl_job_lambda" {
     }
   }
 }
+
+# Lambda function to notify on Glue Job completion
+resource "aws_lambda_function" "notify_glue_job_completion_lambda" {
+  function_name = "notify-glue-job-completion"
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "notify_glue_job_completion.lambda_handler"
+  runtime       = "python3.9"
+  filename      = "${path.module}/notify_glue_job_completion_lambda.zip"
+  environment {
+    variables = {
+      PROCESSED_BUCKET = aws_s3_bucket.processed_zone.bucket
+      SNS_TOPIC_ARN    = aws_sns_topic.lambda_notification.arn
+    }
+  }
+}

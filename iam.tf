@@ -1,3 +1,5 @@
+# 'iam.tf'
+
 # IAM Role for Lambda functions (shared by both s3_ingest_lambda and start_glue_etl_job_lambda)
 resource "aws_iam_role" "lambda_role" {
   name = "lambda-execution-role"
@@ -107,6 +109,36 @@ resource "aws_iam_policy" "lambda_glue_policy" {
 resource "aws_iam_role_policy_attachment" "lambda_glue_policy_attachment" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.lambda_glue_policy.arn
+}
+
+# Add permissions for notify_glue_job_completion_lambda to access S3 and SNS
+resource "aws_iam_policy" "lambda_glue_job_completion_policy" {
+  name        = "lambda-glue-job-completion-policy"
+  description = "Policy for Lambda to list objects in the processed bucket and send SNS notifications"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": "${aws_s3_bucket.processed_zone.arn}"
+      },
+      {
+        "Effect": "Allow",
+        "Action": "sns:Publish",
+        "Resource": aws_sns_topic.lambda_notification.arn
+      }
+    ]
+  })
+}
+
+# Attach policy to Lambda role
+resource "aws_iam_role_policy_attachment" "lambda_glue_job_completion_policy_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_glue_job_completion_policy.arn
 }
 
 # IAM Role for Glue Crawler and Glue Job

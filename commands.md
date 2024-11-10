@@ -51,6 +51,11 @@ cd new_lambda_package
 zip -r ../start_glue_etl_job_lambda.zip .
 
 
+cd glue_job_completion
+
+zip -r ../notify_glue_job_completion_lambda.zip notify_glue_job_completion.py
+
+
 
 ## Basic Checks
 
