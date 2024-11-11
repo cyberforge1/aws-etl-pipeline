@@ -27,7 +27,7 @@ python scripts/upload_new_document.py
 
 python scripts/upload_to_processed_bucket.py
 
-*** update script in s3 bucket : aws s3 cp glue_etl_script s3://etl-glue-scripts-bucket/glue_etl_script
+*** update script in s3 bucket : aws s3 cp scripts/scripts/scripts/scripts/scripts/glue_etl_script s3://etl-glue-scripts-bucket/glue_etl_script
 
 
 ## AWS
