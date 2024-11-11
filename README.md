@@ -1,4 +1,4 @@
-# AWS ETL Pipeline
+# AWS ETL Pipeline (Serverless)
 
 ## Project Overview
 A serverless ETL pipeline built with AWS services and Terraform Infrastructure as Code (IaC). This pipeline leverages Amazon S3, AWS Lambda, AWS Glue, EventBridge, and SNS to automate data ingestion, processing, notifications, and loading of processed data.
