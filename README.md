@@ -3,9 +3,6 @@
 ## Project Overview
 A serverless ETL pipeline built with AWS services and Terraform Infrastructure as Code (IaC). This pipeline leverages Amazon S3, AWS Lambda, AWS Glue, EventBridge, and SNS to automate data ingestion, processing, notifications, and loading of processed data.
 
-## Deployment Link
-Currently deployed within an AWS environment (requires AWS account access).
-
 ## Screenshot
 ![Application Screenshot](aws-etl-pipeline.png "ETL Pipeline Architecture")
 
@@ -26,15 +23,15 @@ Currently deployed within an AWS environment (requires AWS account access).
 The goal of this project is to create a scalable and automated ETL pipeline that can handle raw data ingestion, metadata extraction, transformation, and loading of processed data into structured storage. By automating this workflow using AWS Glue, Lambda, and EventBridge, this ETL process becomes efficient, fault-tolerant, and easy to monitor.
 
 ## Tech Stack
-- **AWS S3** - Raw and processed data storage
-- **AWS Lambda** - Serverless functions for data processing and orchestration
-- **AWS Glue ETL and Crawler** - Schema discovery, metadata cataloging, and ETL operations
-- **AWS Glue Data Catalog** - Centralized metadata repository
-- **Amazon EventBridge** - Event-driven architecture to trigger processing steps
-- **AWS SNS** - Notifications on ETL job completion
-- **AWS SQS** - Decoupled messaging between Lambda functions
-- **Terraform** - Infrastructure as Code for provisioning AWS resources
-- **Python (Boto3)** - AWS SDK for automation and Lambda scripts
+- AWS S3
+- AWS Lambda
+- AWS Glue
+- AWS Glue Data Catalog
+- Amazon EventBridge
+- AWS SNS
+- AWS SQS
+- Terraform
+- Python (Boto3)
 
 ## How To Use
 1. Upload raw data files to the S3 Raw Zone bucket to trigger the ETL pipeline automatically.
