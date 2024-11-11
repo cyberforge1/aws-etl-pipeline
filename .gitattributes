@@ -1,9 +1,9 @@
 # Ignore all Python files in specific directories for language statistics
-lambda_functions/*.py linguist-vendored
+#lambda_functions/*.py linguist-vendored
 #scripts/*.py linguist-vendored
 
 # Ignore any other standalone Python files if needed
-*.py linguist-vendored
+#*.py linguist-vendored
 
 # Set Terraform files as HCL for language detection
 *.tf linguist-language=HCL
