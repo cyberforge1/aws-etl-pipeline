@@ -1,1 +1,3 @@
 *.tf linguist-language=HCL
+
+*.py linguist-vendored
