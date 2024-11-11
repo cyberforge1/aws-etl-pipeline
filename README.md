@@ -58,6 +58,7 @@ The goal of this project is to create a scalable and automated ETL pipeline that
 - [ ] Add support for multiple data formats (e.g., CSV, Parquet) and dynamic schema handling.
 
 ## Learning Highlights
+- Using modular steps to build more complex cloud infrastructure
 - Setting up and configuring AWS Glue for ETL tasks
 - Using Terraform to provision AWS resources and automate IaC
 - Implementing event-driven architectures with EventBridge and SQS
@@ -68,7 +69,10 @@ The goal of this project is to create a scalable and automated ETL pipeline that
 - Lambda functions may timeout for very large files, requiring adjustments in timeout settings and memory allocation.
 
 ## Challenges
-Implementing fault tolerance with SQS queues and ensuring that the pipeline can handle data failures gracefully was a significant challenge. Debugging and configuring Glue Crawler permissions to interact seamlessly with S3 buckets and EventBridge required extensive testing and careful IAM role configurations.
+- Defining glue_etl_script.py to execute desired functionality 
+- Careful IAM permission provisioning
+- Defining process driven lambda functions 
+
 
 ## Contact Me
 - Visit my [LinkedIn](https://www.linkedin.com/in/obj809/) for more details.
