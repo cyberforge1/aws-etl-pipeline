@@ -2,8 +2,8 @@
 lambda_functions/*.py linguist-vendored
 scripts/*.py linguist-vendored
 
-# # Ignore any other standalone Python files if needed
-# *.py linguist-vendored
+# Ignore any other standalone Python files if needed
+*.py linguist-vendored
 
 # # Set Terraform files as HCL for language detection
 # *.tf linguist-language=HCL
