@@ -1,6 +1,6 @@
-# Ignore all Python files in specific directories for language statistics
-lambda_functions/*.py linguist-vendored
-scripts/*.py linguist-vendored
+# # Ignore all Python files in specific directories for language statistics
+# lambda_functions/*.py linguist-vendored
+# scripts/*.py linguist-vendored
 
 # Ignore any other standalone Python files if needed
 *.py linguist-vendored
