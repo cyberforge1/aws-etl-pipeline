@@ -1,11 +1,9 @@
 # 'terraform/glue.tf'
 
-# Glue Database for storing crawler metadata
 resource "aws_glue_catalog_database" "etl_database" {
   name = "etl_database"
 }
 
-# Glue Crawler
 resource "aws_glue_crawler" "etl_crawler" {
   name          = "etl-crawler"
   role          = aws_iam_role.glue_role.arn  # Reference the Glue-specific IAM role
@@ -20,13 +18,11 @@ resource "aws_glue_crawler" "etl_crawler" {
   }
 }
 
-# Glue Job for ETL processing
 resource "aws_glue_job" "etl_job" {
   name        = "etl-job"
   role_arn    = aws_iam_role.glue_role.arn  # Use the Glue-specific IAM role
   command {
     name            = "glueetl"
-  # In glue.tf, update this line:
   script_location = "s3://${aws_s3_bucket.glue_scripts.bucket}/${aws_s3_object.glue_script.key}"  # Reference the uploaded Glue ETL script
     python_version  = "3"
   }

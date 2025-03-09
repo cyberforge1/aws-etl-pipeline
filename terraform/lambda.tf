@@ -1,6 +1,5 @@
 # 'terraform/lambda.tf'
 
-# Existing Lambda function for S3 ingestion
 resource "aws_lambda_function" "s3_ingest_lambda" {
   function_name = "etl-s3-ingest"
   role          = aws_iam_role.lambda_role.arn
@@ -9,7 +8,6 @@ resource "aws_lambda_function" "s3_ingest_lambda" {
   filename      = "${path.module}/../zipped_lambda_functions/lambda_package.zip"  # Adjusted path to zip file
 }
 
-# Allow S3 to invoke the existing Lambda function
 resource "aws_lambda_permission" "allow_s3_invoke" {
   statement_id  = "AllowExecutionFromS3"
   action        = "lambda:InvokeFunction"
@@ -18,7 +16,6 @@ resource "aws_lambda_permission" "allow_s3_invoke" {
   source_arn    = aws_s3_bucket.raw_zone.arn  # Ensure it’s the correct bucket ARN
 }
 
-# New Lambda function to start Glue ETL job
 resource "aws_lambda_function" "start_glue_etl_job_lambda" {
   function_name = "start-glue-etl-job"
   role          = aws_iam_role.lambda_role.arn
@@ -32,7 +29,6 @@ resource "aws_lambda_function" "start_glue_etl_job_lambda" {
   }
 }
 
-# Lambda function to notify on Glue Job completion
 resource "aws_lambda_function" "notify_glue_job_completion_lambda" {
   function_name = "notify-glue-job-completion"
   role          = aws_iam_role.lambda_role.arn
