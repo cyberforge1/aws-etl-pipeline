@@ -1,6 +1,8 @@
+.DS_Store
 .terraform/
 *.tfstate
 *.tfstate.backup
 .env
 terraform.tfvars
 venv
+CLAUDE.md
